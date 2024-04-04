@@ -1,5 +1,5 @@
 <template>
-    <div class="mb-6">
+    <div class="mb-4">
         <label
             for="input"
             class="block mb-2 text-sm font-bold text-gray-900 dark:text-gray-400"
@@ -9,16 +9,17 @@
         <input
             type="text"
             id="input"
-            :value="value"
+            :value="props.modelValue"
+            @input="emit('update:modelValue', $event.target.value)"
             :required="isRequired"
             class="text-gray-900 dark:text-gray-400 placeholder-gray-700 dark:placeholder-gray-500 text-sm rounded-lg focus:ring-bule-500 focus:border-bule-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-500"
             :placeholder="props.placeHolder"
         />
         <p
             v-if="props.errors"
-            class="mt-2 text-sm text-red-600 dark:text-red-500"
+            class="mt-2 text-xs italic text-red-600 dark:text-red-500"
         >
-            <span class="font-medium">{{ props.errors }}</span>
+            <span class="font-medium">! {{ props.errors }}</span>
         </p>
     </div>
 </template>
@@ -28,7 +29,7 @@ const props = defineProps<{
     isRequired: boolean;
     placeHolder?: string;
     errors?: string;
+    modelValue: string | undefined;
 }>();
-
-const value = defineModel({ type: String });
+const emit = defineEmits(["update:modelValue"]);
 </script>

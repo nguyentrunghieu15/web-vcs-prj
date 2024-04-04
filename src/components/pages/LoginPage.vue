@@ -83,17 +83,6 @@
                                 Sign in
                             </button>
                         </div>
-                        <p
-                            class="text-sm font-light text-gray-500 dark:text-gray-400"
-                        >
-                            Don’t have an account yet?
-                            <RouterLink
-                                to="/signup"
-                                class="font-medium text-primary-600 hover:underline dark:text-primary-500"
-                            >
-                                Sign up
-                            </RouterLink>
-                        </p>
                     </form>
                 </div>
             </div>

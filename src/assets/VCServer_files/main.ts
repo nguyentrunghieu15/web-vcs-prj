@@ -1,0 +1,11 @@
+import { createApp } from "/node_modules/.vite/deps/vue.js?v=d800b25b";
+import { createPinia } from "/node_modules/.vite/deps/pinia.js?v=d800b25b";
+import App from "/src/App.vue";
+import "/src/index.css?t=1712197183330";
+import router from "/src/router/index.ts?t=1712197183330";
+const app = createApp(App);
+app.use(createPinia());
+app.use(router);
+app.mount("#app");
+
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIkM6L1VzZXJzL2FkbWluL0RvY3VtZW50cy9IaXJvL3Zjcy1tYW5hZ2VtZW50L3NyYy9tYWluLnRzIl0sInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IGNyZWF0ZUFwcCB9IGZyb20gXCJ2dWVcIjtcbmltcG9ydCB7IGNyZWF0ZVBpbmlhIH0gZnJvbSBcInBpbmlhXCI7XG5pbXBvcnQgQXBwIGZyb20gXCIuL0FwcC52dWVcIjtcblxuaW1wb3J0IFwiLi9pbmRleC5jc3NcIjtcbmltcG9ydCByb3V0ZXIgZnJvbSBcIi4vcm91dGVyXCI7XG5cbmNvbnN0IGFwcCA9IGNyZWF0ZUFwcChBcHApO1xuXG5hcHAudXNlKGNyZWF0ZVBpbmlhKCkpO1xuYXBwLnVzZShyb3V0ZXIpXG5cbmFwcC5tb3VudChcIiNhcHBcIik7XG4iXSwibWFwcGluZ3MiOiJBQUFBLFNBQVMsaUJBQWlCO0FBQzFCLFNBQVMsbUJBQW1CO0FBQzVCLE9BQU8sU0FBUztBQUVoQixPQUFPO0FBQ1AsT0FBTyxZQUFZO0FBRW5CLE1BQU0sTUFBTSxVQUFVLEdBQUc7QUFFekIsSUFBSSxJQUFJLFlBQVksQ0FBQztBQUNyQixJQUFJLElBQUksTUFBTTtBQUVkLElBQUksTUFBTSxNQUFNOyIsIm5hbWVzIjpbXX0=
