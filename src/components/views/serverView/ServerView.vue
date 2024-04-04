@@ -29,7 +29,7 @@
                                 leave-to-class="opacity-0"
                             >
                                 <ListboxOptions
-                                    class="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm"
+                                    class="z-20 absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm"
                                 >
                                     <ListboxOption
                                         v-slot="{ active, selected }"
@@ -39,6 +39,7 @@
                                         as="template"
                                     >
                                         <li
+                                            class="z-30"
                                             :class="[
                                                 active
                                                     ? 'bg-amber-100 text-amber-900'
@@ -74,7 +75,7 @@
                 <button
                     @click="onClickCreate"
                     type="button"
-                    class="text-white bg-[#1da1f2] hover:bg-[#1da1f2]/90 focus:ring-4 focus:outline-none focus:ring-[#1da1f2]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#1da1f2]/55 me-2 mb-2"
+                    class="text-white bg-[#1da1f2] hover:bg-[#1da1f2]/90 focus:ring-4 focus:outline-none focus:ring-[#1da1f2]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#1da1f2]/55"
                 >
                     New Server
                 </button>
@@ -185,12 +186,18 @@
                             Edit
                         </button>
                         <button
+                            @click="onChangeStatusServer(server.id)"
                             type="button"
                             class="h-10 w-24 text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800"
                         >
-                            Turn on
+                            {{
+                                server.status === Status.ON
+                                    ? "Turn off"
+                                    : "Turn on"
+                            }}
                         </button>
                         <button
+                            @click="onClickDelete(server.id)"
                             type="button"
                             class="h-10 text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900"
                         >
@@ -247,6 +254,12 @@
     </div>
     <EditServerPopup v-model:isOpen="isOpenEditPopup"></EditServerPopup>
     <CreateServerPopup v-model:isOpen="isOpenCreatePopup"></CreateServerPopup>
+    <ComfirmPopup
+        :content="confirmDelete.content"
+        :title="confirmDelete.title"
+        v-model:is-open="isOpenDeletePopup"
+        @confirm="onAcceptDelete"
+    ></ComfirmPopup>
 </template>
 
 <script setup lang="ts">
@@ -263,12 +276,20 @@ import { ServerFilterEnum, Status } from "./../interfaces";
 import EditServerPopup from "./EditServerPopup.vue";
 import CreateServerPopup from "./CreateServerPopup.vue";
 import { ServerFilter } from "../constants";
+import ComfirmPopup from "@/components/base/ComfirmPopup.vue";
 
 const filter = ServerFilter;
 
 const serverStore = useServerStore();
 
 const page = ref(0);
+
+const isOpenDeletePopup = ref(false);
+
+const confirmDelete = ref({
+    title: "Warnning delete",
+    content: "Select 'Yes' if you are sure you want to delete the server.",
+});
 
 const pigination = computed(() => {
     const result: number[] = [];
@@ -284,6 +305,11 @@ const isOpenEditPopup = ref(false);
 const isOpenCreatePopup = ref(false);
 
 const listServer = serverStore.servers;
+
+const onClickDelete = (id: string) => {
+    serverStore.setSelectedServer(id);
+    isOpenDeletePopup.value = !isOpenDeletePopup.value;
+};
 
 const onClickEdit = (id: string) => {
     serverStore.setSelectedServer(id);
@@ -315,4 +341,12 @@ const applyFilter = (v: ServerFilterEnum) => {
 watch(selectedFilter, (newValue, oldValue) => {
     applyFilter(newValue);
 });
+
+const onAcceptDelete = (value: boolean) => {
+    console.log(value ? "Accept" : "Decline");
+};
+
+const onChangeStatusServer = (id: string) => {
+    console.log("Change status", id);
+};
 </script>

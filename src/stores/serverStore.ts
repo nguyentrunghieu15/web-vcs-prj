@@ -11,7 +11,7 @@ export const useServerStore = defineStore("servers", () => {
             id: "1",
             ipv4: "0.0.0.0",
             lastUpdate: new Date(),
-            status: Status.ON,
+            status: Status.OFF,
         },
         {
             serverName: "Server 2",
