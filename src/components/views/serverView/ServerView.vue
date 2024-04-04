@@ -334,13 +334,13 @@ const onClickCreate = () => {
 
 const selectedFilter = ref(ServerFilterEnum.ALL);
 
-const applyFilter = (v: ServerFilterEnum) => {
-    console.log("Aply", ServerFilter.get(v));
-};
-
 watch(selectedFilter, (newValue, oldValue) => {
     applyFilter(newValue);
 });
+
+const applyFilter = (v: ServerFilterEnum) => {
+    console.log("Apply", ServerFilter.get(v));
+};
 
 const onAcceptDelete = (value: boolean) => {
     console.log(value ? "Accept" : "Decline");

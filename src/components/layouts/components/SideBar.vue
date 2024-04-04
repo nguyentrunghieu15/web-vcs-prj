@@ -38,7 +38,15 @@
         >
             <div class="h-full px-3 py-4 overflow-y-auto dark:bg-gray-800">
                 <ul class="space-y-2">
-                    <li v-for="i in sidebar" :key="i.label">
+                    <li
+                        v-for="i in sidebar"
+                        :key="i.label"
+                        @click="selectedSideBarItem = i.label"
+                        class="ring-2 ring-blue-100 rounded-xl"
+                        :class="
+                            selectedSideBarItem === i.label ? 'bg-blue-100' : ''
+                        "
+                    >
                         <SideBarItem v-if="!i?.child" :item="i"></SideBarItem>
                         <SideBarGroupItem v-else :group="i"></SideBarGroupItem>
                     </li>
@@ -53,8 +61,16 @@ import logo from "@/assets/_995ed77b-bb47-45ba-aa62-42c8bc67e68a-removebg-previe
 import { useSideBarStore } from "@/stores/sideBarStore";
 import SideBarItem from "./SideBarItem.vue";
 import SideBarGroupItem from "./SideBarGroupItem.vue";
+import { onMounted, ref } from "vue";
 
-const store = useSideBarStore();
+const sidebarStore = useSideBarStore();
 
-const sidebar = store.checkSideBar;
+const sidebar = sidebarStore.checkSideBar;
+
+const selectedSideBarItem = ref("");
+
+onMounted(() => {
+    selectedSideBarItem.value =
+        sidebar.value.length > 0 ? sidebar.value[0].label : "";
+});
 </script>

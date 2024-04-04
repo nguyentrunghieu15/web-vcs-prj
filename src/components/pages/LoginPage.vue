@@ -19,7 +19,10 @@
                     >
                         Sign in to your account
                     </h1>
-                    <form class="space-y-4 md:space-y-6" action="#">
+                    <form
+                        class="space-y-4 md:space-y-6"
+                        @submit.prevent="onSubmit"
+                    >
                         <div>
                             <label
                                 for="email"
@@ -28,12 +31,21 @@
                             >
                             <input
                                 type="email"
-                                name="email"
+                                v-model="email"
+                                v-bind="emailAttrs"
                                 id="email"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 placeholder="name@company.com"
-                                required=""
+                                required="true"
                             />
+                            <p
+                                v-if="errors.email"
+                                class="mt-2 text-xs italic text-red-600 dark:text-red-500"
+                            >
+                                <span class="font-medium"
+                                    >! {{ errors.email }}</span
+                                >
+                            </p>
                         </div>
                         <div>
                             <label
@@ -43,12 +55,21 @@
                             >
                             <input
                                 type="password"
-                                name="password"
+                                v-model="password"
+                                v-bind="passwordAttrs"
                                 id="password"
                                 placeholder="••••••••"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                required=""
+                                required="true"
                             />
+                            <p
+                                v-if="errors.password"
+                                class="mt-2 text-xs italic text-red-600 dark:text-red-500"
+                            >
+                                <span class="font-medium"
+                                    >! {{ errors.password }}</span
+                                >
+                            </p>
                         </div>
                         <div class="flex items-center justify-between">
                             <div class="flex items-start">
@@ -58,7 +79,6 @@
                                         aria-describedby="remember"
                                         type="checkbox"
                                         class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
-                                        required=""
                                     />
                                 </div>
                                 <div class="ml-3 text-sm">
@@ -92,4 +112,20 @@
 
 <script setup lang="ts">
 import logo from "@/assets/_995ed77b-bb47-45ba-aa62-42c8bc67e68a-removebg-preview.png";
+import { useForm } from "vee-validate";
+import * as yup from "yup";
+
+const { values, errors, defineField, handleSubmit } = useForm({
+    validationSchema: yup.object({
+        email: yup.string().required().email(),
+        password: yup.string().required().min(6),
+    }),
+});
+
+const [email, emailAttrs] = defineField("email");
+const [password, passwordAttrs] = defineField("password");
+
+const onSubmit = handleSubmit((values) => {
+    alert(JSON.stringify(values, null, 2));
+});
 </script>

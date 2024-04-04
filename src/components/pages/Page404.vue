@@ -22,7 +22,7 @@
                     :to="{ name: 'home' }"
                     class="text-sm font-semibold text-gray-900"
                     >Contact support
-                    <span aria-hidden="true">&rarr;</span></RouterLink
+                    <span aria-hidden="true"></span></RouterLink
                 >
             </div>
         </div>
