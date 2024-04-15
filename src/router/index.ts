@@ -21,10 +21,8 @@ const routes: RouteRecordRaw[] = [
         name: "home",
         path: "/home",
         component: DashboardSideBar,
-        children: [
-            { path: "", redirect: { name: "server" } },
-            { name: "server", path: "server", component: ServerView },
-        ],
+        redirect: { name: "server" },
+        children: [{ name: "server", path: "server", component: ServerView }],
         meta: {
             sideBar: HomeSideBar,
             requiresAuth: true,

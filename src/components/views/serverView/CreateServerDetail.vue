@@ -51,10 +51,14 @@
 <script setup lang="ts">
 import InputFiled from "@/components/base/InputFiled.vue";
 import Switch from "@/components/base/Switch.vue";
-import form from "./createServerFrom";
+import useCreateServerForm from "./createServerFrom";
 import { onUnmounted } from "vue";
 import { serverService } from "@/plugins/axios/server/serverService";
 import { useServerStore } from "@/stores/serverStore";
+import type { IListServerRequest } from "@/plugins/axios/server/interfaces";
+import { DefaultPagination } from "../constants";
+
+const form = useCreateServerForm();
 
 onUnmounted(() => {
     form.resetForm();
@@ -62,18 +66,24 @@ onUnmounted(() => {
 
 const serverStore = useServerStore();
 
+const filterServer = serverStore.filterServerComputed;
+
 const emit = defineEmits(["closeForm"]);
 
-const getListServer = () => {
-    serverService.getListServer({}).then((response) => {
+const getListServer = (req: IListServerRequest) => {
+    serverService.getListServer(req).then((response) => {
         const { data } = response;
         serverStore.updateServers(data.servers);
+        serverStore.updateTotalServer(data.total);
     });
 };
 const onSubmit = async () => {
     const result = await form.onSubmit();
     if (result) {
-        getListServer();
+        getListServer({
+            filter: filterServer.value,
+            pagination: DefaultPagination,
+        });
         emit("closeForm");
     }
 };

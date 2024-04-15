@@ -62,6 +62,7 @@ import { useSideBarStore } from "@/stores/sideBarStore";
 import SideBarItem from "./SideBarItem.vue";
 import SideBarGroupItem from "./SideBarGroupItem.vue";
 import { onMounted, ref } from "vue";
+import { useRoute } from "vue-router";
 
 const sidebarStore = useSideBarStore();
 
@@ -69,8 +70,9 @@ const sidebar = sidebarStore.checkSideBar;
 
 const selectedSideBarItem = ref("");
 
+const route = useRoute();
+
 onMounted(() => {
-    selectedSideBarItem.value =
-        sidebar.value.length > 0 ? sidebar.value[0].label : "";
+    selectedSideBarItem.value = "Server";
 });
 </script>

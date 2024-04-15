@@ -38,7 +38,7 @@
                             <form @submit.prevent="onSubmit">
                                 <div class="mt-2">
                                     <h5
-                                        class="text-xl font-medium leading-6 text-gray-900"
+                                        class="text-l font-medium leading-6 text-gray-900"
                                     >
                                         Created At
                                     </h5>
@@ -69,7 +69,7 @@
                                 </div>
                                 <div class="mt-2">
                                     <h5
-                                        class="text-xl font-medium leading-6 text-gray-900"
+                                        class="text-l font-medium leading-6 text-gray-900"
                                     >
                                         Last update
                                     </h5>
@@ -148,8 +148,15 @@ import {
 } from "@headlessui/vue";
 import DatePicker from "@/components/base/DatePicker.vue";
 import Switch from "@/components/base/Switch.vue";
-import form from "./filterServerFrom";
+import useFilterForm from "./filterServerFrom";
 import { useServerStore } from "@/stores/serverStore";
+import {
+    ServerStatus,
+    type IListServerRequest,
+} from "@/plugins/axios/server/interfaces";
+import { serverService } from "@/plugins/axios/server/serverService";
+import { DefaultPagination } from "../constants";
+import { onMounted } from "vue";
 
 const isOpen = defineModel("isOpen", { type: Boolean });
 
@@ -157,17 +164,44 @@ function closeModal() {
     isOpen.value = false;
 }
 
+const form = useFilterForm();
+
 const serverStore = useServerStore();
+const filterServer = serverStore.filterServerComputed;
 
 function onClear() {
     form.resetForm();
-    serverStore.updateFilterServer({});
-    closeModal();
 }
+
+const getListServer = (req: IListServerRequest) => {
+    serverService.getListServer(req).then((response) => {
+        const { data } = response;
+        serverStore.updateServers(data.servers);
+        serverStore.updateTotalServer(data.total);
+    });
+};
+
+onMounted(() => {
+    form.resetForm();
+    form.setFieldValue("createdAtFrom", filterServer.value?.createdAtFrom);
+    form.setFieldValue("createdAtTo", filterServer.value?.createdAtTo);
+    form.setFieldValue("updatedAtFrom", filterServer.value?.updatedAtFrom);
+    form.setFieldValue("updatedAtTo", filterServer.value?.updatedAtTo);
+    form.setFieldValue(
+        "status",
+        filterServer.value?.status
+            ? filterServer.value?.status === ServerStatus.ON
+            : undefined
+    );
+});
 
 async function onSubmit() {
     const result = await form.onSubmit();
     if (result) {
+        await getListServer({
+            filter: filterServer.value,
+            pagination: DefaultPagination,
+        });
         closeModal();
     }
 }

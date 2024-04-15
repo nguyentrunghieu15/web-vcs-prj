@@ -14,6 +14,8 @@ import type {
 } from "../interpretors/interfaces";
 import { authInterpretor } from "../interpretors/authorizeInterpretor";
 import type { Server } from "@/components/views/interfaces";
+import qs from "qs";
+
 import type {
     ICreateServerRequest,
     IListServerRequest,
@@ -57,7 +59,15 @@ class ServerService {
         });
     }
     getListServer(req: IListServerRequest) {
-        return this.axiosInstance.get<IListServerResponse>("", { params: req });
+        return this.axiosInstance.get<IListServerResponse>("", {
+            params: req,
+            paramsSerializer: (param) =>
+                qs.stringify(param, {
+                    indices: false,
+                    encode: false,
+                    allowDots: true,
+                }),
+        });
     }
     createServer(data: ICreateServerRequest) {
         return this.axiosInstance.post("", data);

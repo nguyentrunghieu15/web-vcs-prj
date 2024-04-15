@@ -33,10 +33,10 @@
         </svg>
     </button>
     <ul id="dropdown-example" class="hidden py-2 space-y-2">
-        <li v-for="item in props.group.child" :key="item.path">
+        <li v-for="item in props.group.child" :key="item.label">
             <RouterLink
                 class="flex font-medium items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                :to="item?.path || '#'"
+                :to="item?.name || '#'"
                 >{{ item.label }}</RouterLink
             >
         </li>

@@ -12,9 +12,3 @@ export interface Server {
     ipv4: string;
 }
 
-export enum ServerFilterEnum {
-    ALL,
-    YESTERDAY,
-    LAST_WEEK,
-    LAST_MONTH,
-}

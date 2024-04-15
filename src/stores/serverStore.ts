@@ -10,8 +10,14 @@ export const useServerStore = defineStore("servers", () => {
 
     const filterServer = ref<IServerFilter>();
 
+    const totalServer = ref(0);
+
     const servers = computed(() => {
         return listServer;
+    });
+
+    const total = computed(() => {
+        return totalServer;
     });
 
     const selectedServerComputed = computed(() => {
@@ -34,6 +40,10 @@ export const useServerStore = defineStore("servers", () => {
         filterServer.value = value;
     }
 
+    function updateTotalServer(value: number) {
+        totalServer.value = value;
+    }
+
     function clear() {
         listServer.value = [];
     }
@@ -46,5 +56,7 @@ export const useServerStore = defineStore("servers", () => {
         clear,
         filterServerComputed,
         updateFilterServer,
+        updateTotalServer,
+        total,
     };
 });

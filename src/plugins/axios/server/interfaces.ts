@@ -47,12 +47,14 @@ export interface IServerFilter {
 }
 
 export interface IListServerRequest {
+    query?: string;
     filter?: IServerFilter;
     pagination?: IServerPagination;
 }
 
 export interface IListServerResponse {
     servers: Server[];
+    total: number;
 }
 
 export interface IUpdateServerRequest {

@@ -4,74 +4,6 @@
             class="flex flex-column sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between pb-4"
         >
             <div class="flex">
-                <div class="w-48 px-2">
-                    <Listbox v-model="selectedFilter">
-                        <div class="relative mt-1">
-                            <ListboxButton
-                                class="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm"
-                            >
-                                <span class="block truncate">{{
-                                    filter.get(selectedFilter)
-                                }}</span>
-                                <span
-                                    class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"
-                                >
-                                    <ChevronUpDownIcon
-                                        class="h-5 w-5 text-gray-400"
-                                        aria-hidden="true"
-                                    />
-                                </span>
-                            </ListboxButton>
-
-                            <transition
-                                leave-active-class="transition duration-100 ease-in"
-                                leave-from-class="opacity-100"
-                                leave-to-class="opacity-0"
-                            >
-                                <ListboxOptions
-                                    class="z-20 absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm"
-                                >
-                                    <ListboxOption
-                                        v-slot="{ active, selected }"
-                                        v-for="i in filter"
-                                        :key="i[0]"
-                                        :value="i[0]"
-                                        as="template"
-                                    >
-                                        <li
-                                            class="z-30"
-                                            :class="[
-                                                active
-                                                    ? 'bg-amber-100 text-amber-900'
-                                                    : 'text-gray-900',
-                                                'relative cursor-default select-none py-2 pl-10 pr-4',
-                                            ]"
-                                        >
-                                            <span
-                                                :class="[
-                                                    selected
-                                                        ? 'font-medium'
-                                                        : 'font-normal',
-                                                    'block truncate',
-                                                ]"
-                                                >{{ i[1] }}</span
-                                            >
-                                            <span
-                                                v-if="selected"
-                                                class="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600"
-                                            >
-                                                <CheckIcon
-                                                    class="h-5 w-5"
-                                                    aria-hidden="true"
-                                                />
-                                            </span>
-                                        </li>
-                                    </ListboxOption>
-                                </ListboxOptions>
-                            </transition>
-                        </div>
-                    </Listbox>
-                </div>
                 <button
                     @click="onClickCreate"
                     type="button"
@@ -111,6 +43,8 @@
                     id="table-search"
                     class="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="Search for items"
+                    v-model="query"
+                    @input="onChangeSearchQuery"
                 />
             </div>
         </div>
@@ -146,12 +80,7 @@
             </thead>
             <tbody>
                 <tr
-                    v-for="server in listServer.slice(
-                        page * 10,
-                        (page + 1) * 10 < listServer.length
-                            ? (page + 1) * 10
-                            : listServer.length
-                    )"
+                    v-for="server in listServer"
                     :key="server.id"
                     class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                 >
@@ -226,7 +155,7 @@
                 >
                 of
                 <span class="font-semibold text-gray-900 dark:text-white">{{
-                    listServer.length
+                    totalServer
                 }}</span></span
             >
             <ul class="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
@@ -240,7 +169,7 @@
                 <li
                     v-for="p in pigination"
                     :key="p"
-                    @click="page = p"
+                    @click="onClickPage(p)"
                     :class="p === page ? 'bg-blue-300' : ''"
                 >
                     <span
@@ -278,19 +207,22 @@ import {
     ListboxOptions,
     ListboxOption,
 } from "@headlessui/vue";
-import { CheckIcon, ChevronUpDownIcon } from "@heroicons/vue/20/solid";
 import { useServerStore } from "@/stores/serverStore";
-import { ServerFilterEnum, Status } from "./../interfaces";
+import { Status } from "./../interfaces";
 import EditServerPopup from "./EditServerPopup.vue";
 import CreateServerPopup from "./CreateServerPopup.vue";
 import FilterServerPopup from "./FilterServerPopup.vue";
-import { ServerFilter } from "../constants";
+import { DefaultPagination } from "../constants";
 import ComfirmPopup from "@/components/base/ComfirmPopup.vue";
 import { serverService } from "@/plugins/axios/server/serverService";
-
-const filter = ServerFilter;
+import {
+    ServerStatus,
+    type IListServerRequest,
+} from "@/plugins/axios/server/interfaces";
+import { useMainStore } from "@/stores/mainStore";
 
 const serverStore = useServerStore();
+const mainStore = useMainStore();
 
 const selectedServer = serverStore.selectedServerComputed;
 
@@ -304,22 +236,23 @@ const confirmDelete = ref({
 const pigination = computed(() => {
     const result: number[] = [];
     for (let index: number = page.value - 2; index < page.value + 2; index++) {
-        if (index * 10 >= 0 && (index + 1) * 10 <= listServer.value.length) {
+        if (index * 10 >= 0 && (index + 1) * 10 - 9 <= totalServer.value) {
             result.push(index);
         }
     }
     return result;
 });
 
-const getListServer = () => {
-    serverService.getListServer({}).then((response) => {
+const getListServer = (req: IListServerRequest) => {
+    serverService.getListServer(req).then((response) => {
         const { data } = response;
         serverStore.updateServers(data.servers);
+        serverStore.updateTotalServer(data.total);
     });
 };
 
 onMounted(() => {
-    getListServer();
+    getListServer({ pagination: DefaultPagination });
 });
 
 const isOpenEditPopup = ref(false);
@@ -328,6 +261,8 @@ const isOpenDeletePopup = ref(false);
 const isOpenFilterPopup = ref(false);
 
 const listServer = serverStore.servers;
+const totalServer = serverStore.total;
+const filterServer = serverStore.filterServerComputed;
 
 const onClickDelete = (id: number) => {
     serverStore.setSelectedServer(id);
@@ -340,16 +275,47 @@ const onClickEdit = (id: number) => {
 };
 
 const onClickNext = () => {
-    if (page.value + 1 < listServer.value.length / 10) {
+    if (totalServer && page.value + 1 < totalServer.value / 10) {
         page.value++;
+        getListServer({
+            query: query.value === "" ? undefined : query.value,
+            filter: filterServer.value,
+            pagination: {
+                limit: 10,
+                page: page.value + 1,
+                pageSize: 10,
+            },
+        });
     }
 };
 
 const onClickPrevious = () => {
     if (page.value > 0) {
         page.value--;
+        getListServer({
+            query: query.value === "" ? undefined : query.value,
+            filter: filterServer.value,
+            pagination: {
+                limit: 10,
+                page: page.value + 1,
+                pageSize: 10,
+            },
+        });
     }
 };
+
+function onClickPage(p: number) {
+    page.value = p;
+    getListServer({
+        query: query.value === "" ? undefined : query.value,
+        filter: filterServer.value,
+        pagination: {
+            limit: 10,
+            page: page.value + 1,
+            pageSize: 10,
+        },
+    });
+}
 
 const onClickCreate = () => {
     isOpenCreatePopup.value = !isOpenCreatePopup.value;
@@ -359,16 +325,6 @@ const onClickFilter = () => {
     isOpenFilterPopup.value = !isOpenFilterPopup.value;
 };
 
-const selectedFilter = ref(ServerFilterEnum.ALL);
-
-watch(selectedFilter, (newValue, oldValue) => {
-    applyFilter(newValue);
-});
-
-const applyFilter = (v: ServerFilterEnum) => {
-    console.log("Apply", ServerFilter.get(v));
-};
-
 const onAcceptDelete = (value: boolean) => {
     if (value && selectedServer.value?.id) {
         serverService.deleteServer(selectedServer.value?.id);
@@ -376,6 +332,46 @@ const onAcceptDelete = (value: boolean) => {
 };
 
 const onChangeStatusServer = (id: number) => {
-    console.log("Change status", id);
+    const server = listServer.value.find((s) => {
+        return s.id === id;
+    });
+    if (server) {
+        serverService
+            .updateServer({
+                id: server?.id,
+                ipv4: server?.ipv4,
+                name: server?.name,
+                status:
+                    server?.status === Status.ON
+                        ? ServerStatus.OFF
+                        : ServerStatus.ON,
+            })
+            .then((response) => {
+                mainStore.showNofitication({
+                    typeNotification: "infor",
+                    title: "Update server",
+                    content: `Turn ${
+                        server?.status === Status.ON ? "off" : "on"
+                    }  server`,
+                });
+                getListServer({
+                    filter: filterServer.value,
+                    pagination: DefaultPagination,
+                });
+            });
+    }
 };
+
+const query = ref("");
+let delaySearch: number | undefined;
+function onChangeSearchQuery(e: Event) {
+    clearTimeout(delaySearch);
+    delaySearch = setTimeout(() => {
+        getListServer({
+            query: query.value === "" ? undefined : query.value,
+            filter: filterServer.value,
+            pagination: DefaultPagination,
+        });
+    }, 1000);
+}
 </script>

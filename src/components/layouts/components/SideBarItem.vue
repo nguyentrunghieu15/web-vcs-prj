@@ -1,6 +1,6 @@
 <template>
     <RouterLink
-        :to="item?.path || '#'"
+        :to="{ name: item.name } || '#'"
         class="flex items-center text-base font-medium p-2 text-blue-900 rounded-lg dark:text-white hover:bg-blue-100 dark:hover:bg-blue-700 group"
     >
         <svg
