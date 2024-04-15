@@ -112,7 +112,12 @@
 
 <script setup lang="ts">
 import logo from "@/assets/_995ed77b-bb47-45ba-aa62-42c8bc67e68a-removebg-preview.png";
+import { authService } from "@/plugins/axios/auth/authService";
+import { userService } from "@/plugins/axios/user/userService";
+import { SessionStorageKey } from "@/stores/constants";
+import { useUserStore } from "@/stores/userStore";
 import { useForm } from "vee-validate";
+import { useRouter } from "vue-router";
 import * as yup from "yup";
 
 const { values, errors, defineField, handleSubmit } = useForm({
@@ -124,8 +129,33 @@ const { values, errors, defineField, handleSubmit } = useForm({
 
 const [email, emailAttrs] = defineField("email");
 const [password, passwordAttrs] = defineField("password");
+const routes = useRouter();
+const userStore = useUserStore();
 
-const onSubmit = handleSubmit((values) => {
-    alert(JSON.stringify(values, null, 2));
+const onSubmit = handleSubmit(async (values) => {
+    authService
+        .login({
+            email: values["email"],
+            password: values["password"],
+        })
+        .then((response) => {
+            const { data } = response;
+            sessionStorage.setItem(
+                SessionStorageKey.AUTH_TOKEN,
+                data?.accessToken
+            );
+            sessionStorage.setItem(
+                SessionStorageKey.AUTH_REFRESH_TOKEN,
+                data?.refreshToken
+            );
+            userService
+                .getUserByEmail({ email: values["email"] })
+                .then((response) => {
+                    const { data } = response;
+                    userStore.setUser(data);
+                });
+
+            routes.push({ name: "home" });
+        });
 });
 </script>

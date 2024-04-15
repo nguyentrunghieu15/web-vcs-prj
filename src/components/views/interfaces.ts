@@ -1,13 +1,13 @@
 export enum Status {
-    ON,
-    OFF,
+    ON = "ON",
+    OFF = "OFF",
 }
 export interface Server {
-    id: string;
-    serverName: string;
-    createBy: string;
-    createAt: Date;
-    lastUpdate: Date;
+    id: number;
+    name: string;
+    createdBy: number;
+    createdAt: string;
+    updatedAt: string;
     status: Status;
     ipv4: string;
 }

@@ -1,4 +1,6 @@
-import { useField, useForm } from "vee-validate";
+import { ServerStatus } from "@/plugins/axios/server/interfaces";
+import { serverService } from "@/plugins/axios/server/serverService";
+import { useForm } from "vee-validate";
 import * as yup from "yup";
 
 const schema = yup.object({
@@ -29,7 +31,12 @@ const [ipv4, ipv4Attrs] = defineField("ipv4");
 const [status, statusAttrs] = defineField("status");
 
 const onSubmit = handleSubmit((value) => {
-    console.log(value);
+    serverService.createServer({
+        name: value["serverName"],
+        ipv4: value["ipv4"],
+        status: value["status"] ? ServerStatus.ON : ServerStatus.OFF,
+    });
+    return true;
 });
 
 export default {

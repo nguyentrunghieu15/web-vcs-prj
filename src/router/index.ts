@@ -4,6 +4,7 @@ import type { SidebarItem } from "@/components/layouts/components/interfaces";
 import LoginPage from "@/components/pages/LoginPage.vue";
 import Page404 from "@/components/pages/Page404.vue";
 import ServerView from "@/components/views/serverView/ServerView.vue";
+import { SessionStorageKey } from "@/stores/constants";
 import { useSideBarStore } from "@/stores/sideBarStore";
 import {
     createRouter,
@@ -38,17 +39,26 @@ const router = createRouter({
     routes,
 });
 
+function isLogin(): boolean {
+    if (sessionStorage.getItem(SessionStorageKey.AUTH_TOKEN)) {
+        return true;
+    }
+    return false;
+}
+
 router.beforeEach((to, from) => {
     // instead of having to check every route record with
     // to.matched.some(record => record.meta.requiresAuth)
-    if (to.meta?.requiresAuth) {
+    if (to.meta?.requiresAuth && !isLogin()) {
         // this route requires auth, check if logged in
         // if not, redirect to login page.
         return {
-            path: "/login",
-            // save the location we were at to come back later
-            query: { redirect: to.fullPath },
+            name: "login",
         };
+    }
+
+    if (to.name === "login" && isLogin()) {
+        return { name: "home" };
     }
 
     if (to.meta?.sideBar) {

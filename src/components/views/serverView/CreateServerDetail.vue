@@ -53,15 +53,28 @@ import InputFiled from "@/components/base/InputFiled.vue";
 import Switch from "@/components/base/Switch.vue";
 import form from "./createServerFrom";
 import { onUnmounted } from "vue";
+import { serverService } from "@/plugins/axios/server/serverService";
+import { useServerStore } from "@/stores/serverStore";
 
 onUnmounted(() => {
     form.resetForm();
 });
 
+const serverStore = useServerStore();
+
 const emit = defineEmits(["closeForm"]);
 
+const getListServer = () => {
+    serverService.getListServer({}).then((response) => {
+        const { data } = response;
+        serverStore.updateServers(data.servers);
+    });
+};
 const onSubmit = async () => {
-    await form.onSubmit();
-    emit("closeForm");
+    const result = await form.onSubmit();
+    if (result) {
+        getListServer();
+        emit("closeForm");
+    }
 };
 </script>

@@ -13,7 +13,7 @@
                     <InputFiled
                         :is-required="true"
                         label="Server name"
-                        v-model:model-value="form.serverName.value"
+                        v-model:model-value="form.name.value"
                     ></InputFiled>
                     <InputFiled
                         :is-required="true"
@@ -53,21 +53,24 @@ import form from "./updateServerFrom";
 import InputFiled from "@/components/base/InputFiled.vue";
 import Switch from "@/components/base/Switch.vue";
 import { useServerStore } from "@/stores/serverStore";
-import { onMounted, onUnmounted } from "vue";
+import { onBeforeUpdate, onMounted, onUnmounted } from "vue";
 import { Status } from "../interfaces";
+import { serverService } from "@/plugins/axios/server/serverService";
 
 const serverStore = useServerStore();
 
 const selectedServer = serverStore.selectedServerComputed;
 
-onMounted(() => {
-    form.resetForm();
-    form.setFieldValue("serverName", selectedServer.value?.serverName);
-    form.setFieldValue("ipv4", selectedServer.value?.ipv4);
-    form.setFieldValue(
-        "status",
-        selectedServer.value?.status === Status.ON ? true : false
-    );
+onBeforeUpdate(() => {
+    if (form) {
+        form.resetForm();
+        form.setFieldValue("name", selectedServer.value?.name);
+        form.setFieldValue("ipv4", selectedServer.value?.ipv4);
+        form.setFieldValue(
+            "status",
+            selectedServer.value?.status === Status.ON ? true : false
+        );
+    }
 });
 
 onUnmounted(() => {
@@ -76,8 +79,18 @@ onUnmounted(() => {
 
 const emit = defineEmits(["closeForm"]);
 
+const getListServer = () => {
+    serverService.getListServer({}).then((response) => {
+        const { data } = response;
+        serverStore.updateServers(data.servers);
+    });
+};
+
 const onSubmit = async () => {
-    await form.onSubmit();
-    emit("closeForm");
+    const result = await form.onSubmit();
+    if (result) {
+        getListServer();
+        emit("closeForm");
+    }
 };
 </script>

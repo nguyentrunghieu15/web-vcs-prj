@@ -1,18 +1,17 @@
 <template>
-    <div class="mb-4">
+    <div class="relative max-w-sm">
         <label
             for="input"
             class="block mb-2 text-sm font-bold text-gray-900 dark:text-gray-400"
             >{{ props.label }}
             <span v-if="isRequired" class="text-red-800">*</span></label
         >
+
         <input
-            type="text"
-            id="input"
+            type="date"
+            class="relative bg-gray-50 border focus:text-gray-900 border-gray-300 text-gray-400 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             v-model="modelValue"
-            :required="isRequired"
-            class="text-gray-900 dark:text-gray-400 placeholder-gray-700 dark:placeholder-gray-500 text-sm rounded-lg focus:ring-bule-500 focus:border-bule-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-500"
-            :placeholder="props.placeHolder"
+            placeholder="Select date"
         />
         <p
             v-if="props.errors"
@@ -22,6 +21,7 @@
         </p>
     </div>
 </template>
+
 <script setup lang="ts">
 const props = defineProps<{
     label: string;
@@ -29,6 +29,15 @@ const props = defineProps<{
     placeHolder?: string;
     errors?: string;
 }>();
-
-const modelValue = defineModel({ type: String });
+const modelValue = defineModel<string>("value");
 </script>
+
+<style scoped>
+[type="date"]::-webkit-calendar-picker-indicator {
+    opacity: 1;
+    left: 0.7rem;
+    position: absolute;
+    top: 0.7rem;
+    width: 100%;
+}
+</style>
