@@ -78,6 +78,17 @@ class ServerService {
     updateServer(server: IUpdateServerRequest) {
         return this.axiosInstance.patch(`/${server.id}`, server);
     }
+
+    importServer(file: File) {
+        let formData = new FormData();
+        formData.append("file", file);
+
+        return this.axiosInstance.post("/import", formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
+    }
 }
 
 export const serverService = new ServerService(

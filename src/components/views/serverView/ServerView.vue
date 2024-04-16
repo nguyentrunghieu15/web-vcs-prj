@@ -7,16 +7,23 @@
                 <button
                     @click="onClickCreate"
                     type="button"
-                    class="text-white bg-[#1da1f2] hover:bg-[#1da1f2]/90 focus:ring-4 focus:outline-none focus:ring-[#1da1f2]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#1da1f2]/55 mx-2"
+                    class="text-white bg-[#1da1f2] hover:bg-[#1da1f2]/90 focus:ring-4 focus:outline-none focus:ring-[#1da1f2]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#1da1f2]/55 mx-1"
                 >
                     New Server
                 </button>
                 <button
                     @click="onClickFilter"
                     type="button"
-                    class="text-white bg-[#1da1f2] hover:bg-[#1da1f2]/90 focus:ring-4 focus:outline-none focus:ring-[#1da1f2]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#1da1f2]/55"
+                    class="text-white bg-[#1da1f2] hover:bg-[#1da1f2]/90 focus:ring-4 focus:outline-none focus:ring-[#1da1f2]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#1da1f2]/55 mx-1"
                 >
                     Filter
+                </button>
+                <button
+                    @click="onClickImport"
+                    type="button"
+                    class="text-white bg-[#1da1f2] hover:bg-[#1da1f2]/90 focus:ring-4 focus:outline-none focus:ring-[#1da1f2]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#1da1f2]/55 mx-1"
+                >
+                    Import
                 </button>
             </div>
             <label for="table-search" class="sr-only">Search</label>
@@ -191,6 +198,7 @@
     <EditServerPopup v-model:isOpen="isOpenEditPopup"></EditServerPopup>
     <CreateServerPopup v-model:isOpen="isOpenCreatePopup"></CreateServerPopup>
     <FilterServerPopup v-model:is-open="isOpenFilterPopup"></FilterServerPopup>
+    <ImportFilePopup v-model:is-open="isOpenImportPopup"></ImportFilePopup>
     <ComfirmPopup
         :content="confirmDelete.content"
         :title="confirmDelete.title"
@@ -201,17 +209,12 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from "vue";
-import {
-    Listbox,
-    ListboxButton,
-    ListboxOptions,
-    ListboxOption,
-} from "@headlessui/vue";
 import { useServerStore } from "@/stores/serverStore";
 import { Status } from "./../interfaces";
 import EditServerPopup from "./EditServerPopup.vue";
 import CreateServerPopup from "./CreateServerPopup.vue";
 import FilterServerPopup from "./FilterServerPopup.vue";
+import ImportFilePopup from "./ImportFilePopup.vue";
 import { DefaultPagination } from "../constants";
 import ComfirmPopup from "@/components/base/ComfirmPopup.vue";
 import { serverService } from "@/plugins/axios/server/serverService";
@@ -259,6 +262,7 @@ const isOpenEditPopup = ref(false);
 const isOpenCreatePopup = ref(false);
 const isOpenDeletePopup = ref(false);
 const isOpenFilterPopup = ref(false);
+const isOpenImportPopup = ref(false);
 
 const listServer = serverStore.servers;
 const totalServer = serverStore.total;
@@ -323,6 +327,10 @@ const onClickCreate = () => {
 
 const onClickFilter = () => {
     isOpenFilterPopup.value = !isOpenFilterPopup.value;
+};
+
+const onClickImport = () => {
+    isOpenImportPopup.value = !isOpenImportPopup.value;
 };
 
 const onAcceptDelete = (value: boolean) => {
