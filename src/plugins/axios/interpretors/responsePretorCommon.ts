@@ -4,7 +4,7 @@ import { authService } from "../auth/authService";
 import { SessionStorageKey } from "@/stores/constants";
 import axios from "axios";
 
-export const errorHandlerResponse = function (error: any) {
+export const errorHandlerResponse = async function (error: any) {
     // Bất kì mã trạng thái nào lọt ra ngoài tầm 2xx đều khiến hàm này được trigger\
     // Làm gì đó với lỗi response
     const originalConfig = error.config;
@@ -12,7 +12,7 @@ export const errorHandlerResponse = function (error: any) {
         // Access Token was expired
         if (error.response.status === 401 && !originalConfig?._retry) {
             originalConfig._retry = true;
-            authService
+            await authService
                 .refreshToken({
                     refreshToken:
                         sessionStorage.getItem(
@@ -29,6 +29,9 @@ export const errorHandlerResponse = function (error: any) {
                 .catch((err) => {
                     return Promise.reject(error);
                 });
+            originalConfig.headers.Authorization = `Bearer ${sessionStorage.getItem(
+                SessionStorageKey.AUTH_TOKEN
+            )}`;
             return axios(originalConfig);
         }
     }

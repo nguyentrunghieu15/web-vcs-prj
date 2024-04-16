@@ -1,4 +1,2 @@
 #GATE WAY
-GT_BASE_URL=api\v1\
-GT_ADDRESS=localhost
-GT_PORT=8080
+VITE_GT_BASE_URL=localhost:8080\api\v1\

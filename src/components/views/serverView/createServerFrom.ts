@@ -33,8 +33,8 @@ export default function () {
     const [status, statusAttrs] = defineField("status");
     const mainStore = useMainStore();
 
-    const onSubmit = handleSubmit((value) => {
-        serverService
+    const onSubmit = handleSubmit(async (value) => {
+        await serverService
             .createServer({
                 name: value["serverName"],
                 ipv4: value["ipv4"],

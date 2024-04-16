@@ -3,7 +3,7 @@ export enum Status {
     OFF = "OFF",
 }
 export interface Server {
-    id: number;
+    id: string;
     name: string;
     createdBy: number;
     createdAt: string;

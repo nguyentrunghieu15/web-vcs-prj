@@ -28,7 +28,7 @@ export const useServerStore = defineStore("servers", () => {
         return filterServer;
     });
 
-    function setSelectedServer(id: number) {
+    function setSelectedServer(id: string) {
         selectedServer.value = listServer.value.find((e) => e.id === id);
     }
 

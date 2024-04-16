@@ -18,6 +18,7 @@ import qs from "qs";
 
 import type {
     ICreateServerRequest,
+    IExportServerRequest,
     IListServerRequest,
     IListServerResponse,
     IUpdateServerRequest,
@@ -72,7 +73,7 @@ class ServerService {
     createServer(data: ICreateServerRequest) {
         return this.axiosInstance.post("", data);
     }
-    deleteServer(id: number) {
+    deleteServer(id: string) {
         return this.axiosInstance.delete(`/${id}`);
     }
     updateServer(server: IUpdateServerRequest) {
@@ -88,6 +89,9 @@ class ServerService {
                 "Content-Type": "multipart/form-data",
             },
         });
+    }
+    exportServer(req: IExportServerRequest) {
+        return this.axiosInstance.post("/export", req);
     }
 }
 

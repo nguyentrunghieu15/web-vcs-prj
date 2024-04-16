@@ -58,8 +58,26 @@ export interface IListServerResponse {
 }
 
 export interface IUpdateServerRequest {
-    id: number;
+    id: string;
     name: string;
     status: ServerStatus;
     ipv4: string;
+}
+
+export interface IFileExportServerRequest {
+    fileName: string;
+}
+
+export interface IPaginationExportRequest {
+    pageSize?: number;
+    fromPage?: number;
+    toPage?: number;
+    sort?: TypeSort;
+    sortBy?: string;
+}
+
+export interface IExportServerRequest {
+    file: IFileExportServerRequest;
+    filter?: IServerFilter;
+    pagination?: IPaginationExportRequest;
 }

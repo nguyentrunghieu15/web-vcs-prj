@@ -25,6 +25,13 @@
                 >
                     Import
                 </button>
+                <button
+                    @click="onClickExport"
+                    type="button"
+                    class="text-white bg-[#1da1f2] hover:bg-[#1da1f2]/90 focus:ring-4 focus:outline-none focus:ring-[#1da1f2]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#1da1f2]/55 mx-1"
+                >
+                    Export
+                </button>
             </div>
             <label for="table-search" class="sr-only">Search</label>
             <div class="relative">
@@ -199,6 +206,7 @@
     <CreateServerPopup v-model:isOpen="isOpenCreatePopup"></CreateServerPopup>
     <FilterServerPopup v-model:is-open="isOpenFilterPopup"></FilterServerPopup>
     <ImportFilePopup v-model:is-open="isOpenImportPopup"></ImportFilePopup>
+    <ExportFilePopup v-model:is-open="isOpenExportPopup"></ExportFilePopup>
     <ComfirmPopup
         :content="confirmDelete.content"
         :title="confirmDelete.title"
@@ -215,6 +223,7 @@ import EditServerPopup from "./EditServerPopup.vue";
 import CreateServerPopup from "./CreateServerPopup.vue";
 import FilterServerPopup from "./FilterServerPopup.vue";
 import ImportFilePopup from "./ImportFilePopup.vue";
+import ExportFilePopup from "./ExportFilePopup.vue";
 import { DefaultPagination } from "../constants";
 import ComfirmPopup from "@/components/base/ComfirmPopup.vue";
 import { serverService } from "@/plugins/axios/server/serverService";
@@ -263,17 +272,18 @@ const isOpenCreatePopup = ref(false);
 const isOpenDeletePopup = ref(false);
 const isOpenFilterPopup = ref(false);
 const isOpenImportPopup = ref(false);
+const isOpenExportPopup = ref(false);
 
 const listServer = serverStore.servers;
 const totalServer = serverStore.total;
 const filterServer = serverStore.filterServerComputed;
 
-const onClickDelete = (id: number) => {
+const onClickDelete = (id: string) => {
     serverStore.setSelectedServer(id);
     isOpenDeletePopup.value = !isOpenDeletePopup.value;
 };
 
-const onClickEdit = (id: number) => {
+const onClickEdit = (id: string) => {
     serverStore.setSelectedServer(id);
     isOpenEditPopup.value = !isOpenEditPopup.value;
 };
@@ -333,13 +343,29 @@ const onClickImport = () => {
     isOpenImportPopup.value = !isOpenImportPopup.value;
 };
 
+const onClickExport = () => {
+    isOpenExportPopup.value = !isOpenExportPopup.value;
+};
+
 const onAcceptDelete = (value: boolean) => {
     if (value && selectedServer.value?.id) {
-        serverService.deleteServer(selectedServer.value?.id);
+        serverService
+            .deleteServer(selectedServer.value?.id)
+            .then((response) => {
+                mainStore.showNofitication({
+                    typeNotification: "infor",
+                    title: "Delete server",
+                    content: `Delete server successfuly`,
+                });
+                getListServer({
+                    filter: filterServer.value,
+                    pagination: DefaultPagination,
+                });
+            });
     }
 };
 
-const onChangeStatusServer = (id: number) => {
+const onChangeStatusServer = (id: string) => {
     const server = listServer.value.find((s) => {
         return s.id === id;
     });
