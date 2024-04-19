@@ -229,6 +229,7 @@ import ComfirmPopup from "@/components/base/ComfirmPopup.vue";
 import { serverService } from "@/plugins/axios/server/serverService";
 import {
     ServerStatus,
+    TypeSort,
     type IListServerRequest,
 } from "@/plugins/axios/server/interfaces";
 import { useMainStore } from "@/stores/mainStore";
@@ -298,6 +299,8 @@ const onClickNext = () => {
                 limit: 10,
                 page: page.value + 1,
                 pageSize: 10,
+                sort: TypeSort.ASC,
+                sortBy: "created_at",
             },
         });
     }
@@ -313,6 +316,8 @@ const onClickPrevious = () => {
                 limit: 10,
                 page: page.value + 1,
                 pageSize: 10,
+                sort: TypeSort.ASC,
+                sortBy: "created_at",
             },
         });
     }
@@ -327,6 +332,8 @@ function onClickPage(p: number) {
             limit: 10,
             page: page.value + 1,
             pageSize: 10,
+            sort: TypeSort.ASC,
+            sortBy: "created_at",
         },
     });
 }
@@ -352,6 +359,7 @@ const onAcceptDelete = (value: boolean) => {
         serverService
             .deleteServer(selectedServer.value?.id)
             .then((response) => {
+                page.value = 0;
                 mainStore.showNofitication({
                     typeNotification: "infor",
                     title: "Delete server",
@@ -390,7 +398,13 @@ const onChangeStatusServer = (id: string) => {
                 });
                 getListServer({
                     filter: filterServer.value,
-                    pagination: DefaultPagination,
+                    pagination: {
+                        limit: 10,
+                        page: page.value + 1,
+                        pageSize: 10,
+                        sort: TypeSort.ASC,
+                        sortBy: "created_at",
+                    },
                 });
             });
     }
