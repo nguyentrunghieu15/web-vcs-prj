@@ -29,7 +29,10 @@
                     <td>
                         <a
                             @click="onClickDownload(f.FilePath)"
-                            href="#"
+                            :href="
+                                'http://127.0.0.1:8080/api/v1/file/download?path=' +
+                                f.FilePath
+                            "
                             class="px-6 py-3 flex justify-center text-blue-500 hover:underline hover:cursor-pointer"
                             >Download</a
                         >
@@ -61,7 +64,22 @@ onMounted(() => {
     }
 });
 
+const currentUser = userStore.currentUser;
+
 const onClickDownload = (path: string) => {
-    fileService.download(path);
+    fileService.download(path).then((response) => {
+        const href = URL.createObjectURL(response.data);
+
+        // create "a" HTML element with href to file & click
+        const link = document.createElement("a");
+        link.href = href;
+        link.setAttribute("download", "file.pdf"); //or any other extension
+        document.body.appendChild(link);
+        link.click();
+
+        // clean up "a" element & remove ObjectURL
+        document.body.removeChild(link);
+        URL.revokeObjectURL(href);
+    });
 };
 </script>

@@ -56,7 +56,7 @@ class FileService {
         );
     }
     download(path: string) {
-        return this.axiosInstance.get("/download", {
+        return this.axiosInstance.get<Blob>("/download", {
             params: {
                 path: path,
             },
