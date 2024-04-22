@@ -51,7 +51,16 @@ class FileService {
         });
     }
     getAllFileOfUser(userId: number) {
-        return this.axiosInstance.get<IResponseGetAllFileOfUser>(`/user/${userId}`);
+        return this.axiosInstance.get<IResponseGetAllFileOfUser>(
+            `/user/${userId}`
+        );
+    }
+    download(path: string) {
+        return this.axiosInstance.get("/download", {
+            params: {
+                path: path,
+            },
+        });
     }
 }
 
