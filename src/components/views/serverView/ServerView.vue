@@ -62,7 +62,9 @@
                 />
             </div>
         </div>
+        <EmptyStates v-if="!listServer.length"></EmptyStates>
         <table
+            v-else
             class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
         >
             <thead
@@ -92,6 +94,7 @@
                     </th>
                 </tr>
             </thead>
+
             <tbody>
                 <tr
                     v-for="server in listServer"
@@ -134,17 +137,6 @@
                             class="h-10 text-green-700 hover:text-white border border-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-green-500 dark:text-green-500 dark:hover:text-white dark:hover:bg-green-600 dark:focus:ring-green-700"
                         >
                             Edit
-                        </button>
-                        <button
-                            @click="onChangeStatusServer(server.id)"
-                            type="button"
-                            class="h-10 w-24 text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800"
-                        >
-                            {{
-                                server.status === Status.ON
-                                    ? "Turn off"
-                                    : "Turn on"
-                            }}
                         </button>
                         <button
                             @click="onClickDelete(server.id)"
@@ -224,6 +216,7 @@ import CreateServerPopup from "./CreateServerPopup.vue";
 import FilterServerPopup from "./FilterServerPopup.vue";
 import ImportFilePopup from "./ImportFilePopup.vue";
 import ExportFilePopup from "./ExportFilePopup.vue";
+import EmptyStates from "@/components/base/EmptyStates.vue";
 import { DefaultPagination } from "../constants";
 import ComfirmPopup from "@/components/base/ComfirmPopup.vue";
 import { serverService } from "@/plugins/axios/server/serverService";
@@ -368,43 +361,6 @@ const onAcceptDelete = (value: boolean) => {
                 getListServer({
                     filter: filterServer.value,
                     pagination: DefaultPagination,
-                });
-            });
-    }
-};
-
-const onChangeStatusServer = (id: string) => {
-    const server = listServer.value.find((s) => {
-        return s.id === id;
-    });
-    if (server) {
-        serverService
-            .updateServer({
-                id: server?.id,
-                ipv4: server?.ipv4,
-                name: server?.name,
-                status:
-                    server?.status === Status.ON
-                        ? ServerStatus.OFF
-                        : ServerStatus.ON,
-            })
-            .then((response) => {
-                mainStore.showNofitication({
-                    typeNotification: "infor",
-                    title: "Update server",
-                    content: `Turn ${
-                        server?.status === Status.ON ? "off" : "on"
-                    }  server`,
-                });
-                getListServer({
-                    filter: filterServer.value,
-                    pagination: {
-                        limit: 10,
-                        page: page.value + 1,
-                        pageSize: 10,
-                        sort: TypeSort.ASC,
-                        sortBy: "created_at",
-                    },
                 });
             });
     }

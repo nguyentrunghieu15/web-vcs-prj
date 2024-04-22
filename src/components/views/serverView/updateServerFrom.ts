@@ -2,7 +2,7 @@ import { ServerStatus } from "@/plugins/axios/server/interfaces";
 import { serverService } from "@/plugins/axios/server/serverService";
 import { useMainStore } from "@/stores/mainStore";
 import { useServerStore } from "@/stores/serverStore";
-import { useField, useForm } from "vee-validate";
+import { useForm } from "vee-validate";
 import * as yup from "yup";
 
 export default function () {
@@ -31,7 +31,6 @@ export default function () {
 
     const [name, nameAttrs] = defineField("name");
     const [ipv4, ipv4Attrs] = defineField("ipv4");
-    const [status, statusAttrs] = defineField("status");
     const mainStore = useMainStore();
 
     const onSubmit = handleSubmit(async (value) => {
@@ -43,9 +42,6 @@ export default function () {
                     id: selectedServer.value?.id,
                     name: value["name"],
                     ipv4: value["ipv4"],
-                    status: value["status"]
-                        ? ServerStatus.ON
-                        : ServerStatus.OFF,
                 })
                 .then((res) => {
                     mainStore.showNofitication({
@@ -62,7 +58,6 @@ export default function () {
         setFieldValue,
         name,
         ipv4,
-        status,
         onSubmit,
         errors,
         isValidating,

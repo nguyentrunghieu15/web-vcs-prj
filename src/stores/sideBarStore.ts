@@ -9,9 +9,24 @@ export const useSideBarStore = defineStore("sidebar", () => {
         return sidebar;
     });
 
+    const selectedSidebar = ref("dashboard");
+    const selectedSidebarComputed = computed(() => {
+        return selectedSidebar;
+    });
+
     function updateSideBar(value: SidebarItem[]) {
         sidebar.value = value;
     }
 
-    return { sidebar, updateSideBar, checkSideBar };
+    function updateSelectedSidebar(value: string) {
+        selectedSidebar.value = value;
+    }
+
+    return {
+        sidebar,
+        updateSideBar,
+        checkSideBar,
+        selectedSidebarComputed,
+        updateSelectedSidebar,
+    };
 });

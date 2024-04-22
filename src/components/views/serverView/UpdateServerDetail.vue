@@ -21,11 +21,6 @@
                         v-model:model-value="form.ipv4.value"
                         :errors="form.errors.value.ipv4"
                     ></InputFiled>
-                    <Switch
-                        label="Server status"
-                        :is-required="false"
-                        v-model:model-value="form.status.value"
-                    ></Switch>
                 </div>
             </div>
         </div>
@@ -51,9 +46,8 @@
 <script setup lang="ts">
 import useUpdateServerForm from "./updateServerFrom";
 import InputFiled from "@/components/base/InputFiled.vue";
-import Switch from "@/components/base/Switch.vue";
 import { useServerStore } from "@/stores/serverStore";
-import { onBeforeUpdate, onMounted, onUnmounted } from "vue";
+import { onMounted, onUnmounted } from "vue";
 import { Status } from "../interfaces";
 import { serverService } from "@/plugins/axios/server/serverService";
 import type { IListServerRequest } from "@/plugins/axios/server/interfaces";
@@ -70,10 +64,6 @@ onMounted(() => {
     form.resetForm();
     form.setFieldValue("name", selectedServer.value?.name);
     form.setFieldValue("ipv4", selectedServer.value?.ipv4);
-    form.setFieldValue(
-        "status",
-        selectedServer.value?.status === Status.ON ? true : false
-    );
 });
 
 onUnmounted(() => {

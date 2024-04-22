@@ -13,15 +13,9 @@ import type {
     InterPretorResponse,
 } from "../interpretors/interfaces";
 import { authInterpretor } from "../interpretors/authorizeInterpretor";
-import type {
-    IGetUserByEmailRequest,
-    IRequestCreateUser,
-    IRequestUpdateUser,
-    IResponseGetListUser,
-    IUser,
-} from "./interfaces";
+import type { ISendReportRequest } from "./interfaces";
 
-class UserService {
+class MailService {
     axiosInstance: AxiosInstance;
     constructor(
         baseURL: string,
@@ -56,28 +50,13 @@ class UserService {
             );
         });
     }
-    getUserByEmail(req: IGetUserByEmailRequest) {
-        return this.axiosInstance.get<IUser>(`/email/${req.email}`);
-    }
-    getListUser() {
-        return this.axiosInstance.get<IResponseGetListUser>("");
-    }
-
-    createUser(data: IRequestCreateUser) {
-        return this.axiosInstance.post<IUser>("", data);
-    }
-
-    deleteUser(id: number) {
-        return this.axiosInstance.delete(`/${id}`);
-    }
-
-    updateUser(id: number, data: IRequestUpdateUser) {
-        return this.axiosInstance.patch<IUser>(`/${id}`, data);
+    sendReport(data: ISendReportRequest) {
+        this.axiosInstance.post("", data);
     }
 }
 
-export const userService = new UserService(
-    `${import.meta.env["VITE_GT_BASE_URL"]}/user`,
+export const mailService = new MailService(
+    `${import.meta.env["VITE_GT_BASE_URL"]}/mail`,
     [authInterpretor],
     []
 );

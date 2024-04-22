@@ -60,7 +60,7 @@ export interface IListServerResponse {
 export interface IUpdateServerRequest {
     id: string;
     name: string;
-    status: ServerStatus;
+    status?: ServerStatus;
     ipv4: string;
 }
 

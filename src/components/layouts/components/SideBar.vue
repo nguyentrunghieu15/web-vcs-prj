@@ -40,11 +40,11 @@
                 <ul class="space-y-2">
                     <li
                         v-for="i in sidebar"
-                        :key="i.label"
-                        @click="selectedSideBarItem = i.label"
+                        :key="i.name"
+                        @click="updateSelectedSidebarItem(i.name || '')"
                         class="ring-2 ring-blue-100 rounded-xl"
                         :class="
-                            selectedSideBarItem === i.label ? 'bg-blue-100' : ''
+                            selectedSideBarItem === i.name ? 'bg-blue-100' : ''
                         "
                     >
                         <SideBarItem v-if="!i?.child" :item="i"></SideBarItem>
@@ -61,18 +61,13 @@ import logo from "@/assets/_995ed77b-bb47-45ba-aa62-42c8bc67e68a-removebg-previe
 import { useSideBarStore } from "@/stores/sideBarStore";
 import SideBarItem from "./SideBarItem.vue";
 import SideBarGroupItem from "./SideBarGroupItem.vue";
-import { onMounted, ref } from "vue";
-import { useRoute } from "vue-router";
 
 const sidebarStore = useSideBarStore();
 
 const sidebar = sidebarStore.checkSideBar;
 
-const selectedSideBarItem = ref("");
-
-const route = useRoute();
-
-onMounted(() => {
-    selectedSideBarItem.value = "Server";
-});
+const selectedSideBarItem = sidebarStore.selectedSidebarComputed;
+const updateSelectedSidebarItem = (value: string) => {
+    sidebarStore.updateSelectedSidebar(value);
+};
 </script>

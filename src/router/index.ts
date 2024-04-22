@@ -2,7 +2,10 @@ import DashboardSideBar from "@/components/layouts/DashboardSideBar.vue";
 import { HomeSideBar } from "@/components/layouts/components/constants";
 import type { SidebarItem } from "@/components/layouts/components/interfaces";
 import LoginPage from "@/components/pages/LoginPage.vue";
-import Page404 from "@/components/pages/Page404.vue";
+import Forbiden from "@/components/pages/Forbiden.vue";
+import FileView from "@/components/views/fileview/FileView.vue";
+import AdminView from "@/components/views/adminview/AdminView.vue";
+import DashboardView from "@/components/views/dashboard/DashboardView.vue";
 import ServerView from "@/components/views/serverView/ServerView.vue";
 import { SessionStorageKey } from "@/stores/constants";
 import { useSideBarStore } from "@/stores/sideBarStore";
@@ -21,15 +24,20 @@ const routes: RouteRecordRaw[] = [
         name: "home",
         path: "/home",
         component: DashboardSideBar,
-        redirect: { name: "server" },
-        children: [{ name: "server", path: "server", component: ServerView }],
+        redirect: { name: "dashboard" },
+        children: [
+            { name: "server", path: "server", component: ServerView },
+            { name: "file", path: "storage", component: FileView },
+            { name: "admin", path: "admin", component: AdminView },
+            { name: "dashboard", path: "dashboard", component: DashboardView },
+        ],
         meta: {
             sideBar: HomeSideBar,
             requiresAuth: true,
         },
     },
     { name: "login", path: "/login", component: LoginPage },
-    { name: "404", path: "/error", component: Page404 },
+    { name: "forbiden", path: "/error", component: Forbiden },
 ];
 
 const router = createRouter({
