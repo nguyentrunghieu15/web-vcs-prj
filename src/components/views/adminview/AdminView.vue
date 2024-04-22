@@ -13,8 +13,9 @@
                 </button>
             </div>
         </div>
-        <!-- <EmptyStates v-if="false"></EmptyStates> -->
+        <EmptyStates v-if="!listUser?.length"></EmptyStates>
         <table
+            v-else
             class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
         >
             <thead
@@ -156,6 +157,7 @@
 import { onMounted, ref } from "vue";
 import CreateUserPopup from "./CreateUserPopup.vue";
 import UpdateUserPopup from "./UpdateUserPopup.vue";
+import EmptyStates from "@/components/base/EmptyStates.vue";
 import ComfirmPopup from "@/components/base/ComfirmPopup.vue";
 import { userService } from "@/plugins/axios/user/userService";
 import { useUserStore } from "@/stores/userStore";

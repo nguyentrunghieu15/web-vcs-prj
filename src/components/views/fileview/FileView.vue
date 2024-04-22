@@ -5,26 +5,33 @@
         >
             Uploaded files
         </div>
+        <EmptyStates v-if="!fileList.length"></EmptyStates>
         <table
+            v-else
             class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
         >
-            <!-- <EmptyStates></EmptyStates> -->
             <tbody>
                 <tr
-                    v-for="i in [1, 3, 4, 5, 6, 7]"
-                    :key="i"
+                    v-for="f in fileList"
+                    :key="f.id"
                     class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                 >
                     <td class="w-4 h-4">
                         <IconExcell />
                     </td>
-                    <th scope="col" class="px-6 py-3 w-1/2">Test</th>
-                    <th scope="col" class="px-6 py-3">8mb</th>
+                    <th scope="col" class="px-6 py-3 w-1/2">
+                        {{ f.fileName }}
+                    </th>
+                    <th scope="col" class="px-6 py-3">{{ f.fileSize }}</th>
                     <th scope="col" class="px-6 py-3">
-                        <div>failed</div>
+                        <div>{{ f.status }}</div>
                     </th>
                     <td>
                         <a
+                            :href="
+                                'http://localhost:8080/api/v1/file/download?path=' +
+                                f.filePath
+                            "
                             class="px-6 py-3 flex justify-center text-blue-500 hover:underline hover:cursor-pointer"
                             >Download</a
                         >
@@ -36,4 +43,22 @@
 </template>
 <script setup lang="ts">
 import IconExcell from "@/components/icons/IconExcell.vue";
+import { fileService } from "@/plugins/axios/storage/fileService";
+import type { IFile } from "@/plugins/axios/storage/interfaces";
+import { useUserStore } from "@/stores/userStore";
+import { onMounted, ref } from "vue";
+
+const fileList = ref<Array<IFile>>([]);
+const userStore = useUserStore();
+
+onMounted(() => {
+    if (userStore.currentUser.value?.id) {
+        fileService
+            .getAllFileOfUser(userStore.currentUser.value?.id)
+            .then((res) => {
+                const { data } = res;
+                fileList.value = data.files;
+            });
+    }
+});
 </script>

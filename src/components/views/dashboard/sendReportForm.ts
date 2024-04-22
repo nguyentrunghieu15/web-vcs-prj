@@ -1,4 +1,4 @@
-import { mailService } from "@/plugins/axios/mail sender/mailService";
+import { mailService } from "@/plugins/axios/mail_sender/mailService";
 import { useForm } from "vee-validate";
 import * as yup from "yup";
 
