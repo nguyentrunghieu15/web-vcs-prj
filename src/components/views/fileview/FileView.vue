@@ -42,6 +42,7 @@
     </div>
 </template>
 <script setup lang="ts">
+import EmptyStates from "@/components/base/EmptyStates.vue";
 import IconExcell from "@/components/icons/IconExcell.vue";
 import { fileService } from "@/plugins/axios/storage/fileService";
 import type { IFile } from "@/plugins/axios/storage/interfaces";
