@@ -111,6 +111,7 @@
 </template>
 <script setup lang="ts">
 import { serverService } from "@/plugins/axios/server/serverService";
+import { useMainStore } from "@/stores/mainStore";
 import {
     TransitionRoot,
     TransitionChild,
@@ -128,8 +129,29 @@ function closeModal() {
 
 const file = ref<File>();
 
+const mainStore = useMainStore();
+
 function onSubmit() {
     if (file.value) {
+        if (
+            file.value.type !==
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        ) {
+            mainStore.showNofitication({
+                typeNotification: "error",
+                title: "Import file",
+                content: "Invalid type",
+            });
+            return;
+        }
+        if (file.value.size > 10000000) {
+            mainStore.showNofitication({
+                typeNotification: "error",
+                title: "Import file",
+                content: "File size very big",
+            });
+            return;
+        }
         serverService.importServer(file.value);
     }
 }
