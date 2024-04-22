@@ -148,7 +148,7 @@ function onSubmit() {
             mainStore.showNofitication({
                 typeNotification: "error",
                 title: "Import file",
-                content: "File size very big",
+                content: "File size lagger 10Mb",
             });
             return;
         }
