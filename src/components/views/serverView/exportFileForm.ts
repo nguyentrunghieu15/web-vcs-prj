@@ -1,6 +1,7 @@
 import { ServerStatus, TypeSort } from "@/plugins/axios/server/interfaces";
 import { serverService } from "@/plugins/axios/server/serverService";
 import { useServerStore } from "@/stores/serverStore";
+import { useUserStore } from "@/stores/userStore";
 import { useForm } from "vee-validate";
 import * as yup from "yup";
 
@@ -50,8 +51,11 @@ export default function () {
 
     const serverStore = useServerStore();
 
+    const userStore = useUserStore();
+
     const onSubmit = handleSubmit(async (value) => {
         serverService.exportServer({
+            userId: userStore.currentUser.value?.id || 1,
             file: {
                 fileName: value["fileName"],
             },

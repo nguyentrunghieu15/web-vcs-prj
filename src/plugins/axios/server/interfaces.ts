@@ -77,6 +77,7 @@ export interface IPaginationExportRequest {
 }
 
 export interface IExportServerRequest {
+    userId: number;
     file: IFileExportServerRequest;
     filter?: IServerFilter;
     pagination?: IPaginationExportRequest;
