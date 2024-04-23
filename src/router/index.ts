@@ -33,7 +33,7 @@ const routes: RouteRecordRaw[] = [
         ],
         meta: {
             sideBar: HomeSideBar,
-            // requiresAuth: true,
+            requiresAuth: true,
         },
     },
     { name: "login", path: "/login", component: LoginPage },

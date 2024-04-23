@@ -57,7 +57,7 @@ export default function () {
         serverService.exportServer({
             userId: userStore.currentUser.value?.id || 1,
             file: {
-                fileName: value["fileName"],
+                fileName: value["fileName"] + ".xlsx",
             },
             filter: {
                 createdAtFrom: value["createdAtFrom"]

@@ -27,14 +27,10 @@
                         <div>{{ f.Status }}</div>
                     </th>
                     <td>
-                        <a
+                        <span
                             @click="onClickDownload(f.FilePath)"
-                            :href="
-                                'http://127.0.0.1:8080/api/v1/file/download?path=' +
-                                f.FilePath
-                            "
                             class="px-6 py-3 flex justify-center text-blue-500 hover:underline hover:cursor-pointer"
-                            >Download</a
+                            >Download</span
                         >
                     </td>
                 </tr>
@@ -54,13 +50,11 @@ const fileList = ref<Array<IFile>>([]);
 const userStore = useUserStore();
 
 onMounted(() => {
-    if (userStore.currentUser.value?.id) {
-        fileService
-            .getAllFileOfUser(userStore.currentUser.value?.id)
-            .then((res) => {
-                const { data } = res;
-                fileList.value = data.files;
-            });
+    if (currentUser.value?.id) {
+        fileService.getAllFileOfUser(currentUser.value?.id).then((res) => {
+            const { data } = res;
+            fileList.value = data.files;
+        });
     }
 });
 
@@ -73,7 +67,7 @@ const onClickDownload = (path: string) => {
         // create "a" HTML element with href to file & click
         const link = document.createElement("a");
         link.href = href;
-        link.setAttribute("download", "file.pdf"); //or any other extension
+        link.setAttribute("download", "file.xlsx"); //or any other extension
         document.body.appendChild(link);
         link.click();
 
