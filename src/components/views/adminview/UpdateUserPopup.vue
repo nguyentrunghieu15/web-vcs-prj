@@ -168,6 +168,7 @@ const onSubmit = () => {
         userService.getListUser().then((res) => {
             const { data } = res;
             userStore.setListUser(data.users);
+            closeModal();
         });
     });
 };

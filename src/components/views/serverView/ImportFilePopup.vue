@@ -152,7 +152,9 @@ function onSubmit() {
             });
             return;
         }
-        serverService.importServer(file.value);
+        serverService.importServer(file.value).then((res) => {
+            closeModal();
+        });
     }
 }
 

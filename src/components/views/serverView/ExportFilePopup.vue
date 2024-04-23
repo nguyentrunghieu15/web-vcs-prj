@@ -225,6 +225,7 @@
                                     class="mt-6 flex items-center justify-end gap-x-6"
                                 >
                                     <button
+                                        @click="closeModal"
                                         type="button"
                                         class="text-sm font-semibold leading-6 text-gray-900"
                                     >
@@ -315,6 +316,8 @@ function onClickApplyCurentFilter() {
 }
 
 function onSubmit() {
-    form.onSubmit();
+    form.onSubmit().then((res) => {
+        closeModal();
+    });
 }
 </script>
