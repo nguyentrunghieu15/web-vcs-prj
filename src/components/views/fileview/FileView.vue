@@ -13,22 +13,22 @@
             <tbody>
                 <tr
                     v-for="f in fileList"
-                    :key="f.ID"
+                    :key="f.Id"
                     class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                 >
                     <td class="w-4 h-4">
                         <IconExcell />
                     </td>
                     <th scope="col" class="px-6 py-3 w-1/2">
-                        {{ f.FileName }}
+                        {{ f.fileName }}
                     </th>
-                    <th scope="col" class="px-6 py-3">{{ f.FileSize }}</th>
+                    <th scope="col" class="px-6 py-3">{{ f.fileSize }}</th>
                     <th scope="col" class="px-6 py-3">
-                        <div>{{ f.Status }}</div>
+                        <div>{{ f.status }}</div>
                     </th>
                     <td>
                         <span
-                            @click="onClickDownload(f.FilePath)"
+                            @click="onClickDownload(f.filePath)"
                             class="px-6 py-3 flex justify-center text-blue-500 hover:underline hover:cursor-pointer"
                             >Download</span
                         >
