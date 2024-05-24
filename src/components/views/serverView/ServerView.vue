@@ -221,7 +221,6 @@ import { DefaultPagination } from "../constants";
 import ComfirmPopup from "@/components/base/ComfirmPopup.vue";
 import { serverService } from "@/plugins/axios/server/serverService";
 import {
-    ServerStatus,
     TypeSort,
     type IListServerRequest,
 } from "@/plugins/axios/server/interfaces";
