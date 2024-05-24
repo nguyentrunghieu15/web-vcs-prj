@@ -366,7 +366,7 @@ const onAcceptDelete = (value: boolean) => {
 };
 
 const query = ref("");
-let delaySearch: number | undefined;
+let delaySearch :any;
 function onChangeSearchQuery(e: Event) {
     clearTimeout(delaySearch);
     delaySearch = setTimeout(() => {
